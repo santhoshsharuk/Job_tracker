@@ -1,0 +1,5 @@
+{
+  "name": "Gemini Job Tracker",
+  "description": "A modern, AI-powered dashboard to track your job applications. Log every application, manage statuses, set reminders, and get AI-powered summaries of your job search progress.",
+  "requestFramePermissions": []
+}
