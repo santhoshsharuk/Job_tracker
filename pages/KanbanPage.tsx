@@ -55,10 +55,10 @@ const KanbanPage: React.FC<KanbanPageProps> = ({ applications, onEditApplication
 
   return (
     <>
-      <div className="p-4 md:p-8 h-full flex flex-col">
-        <h1 className="text-3xl font-bold text-gray-800 px-4">Kanban Board</h1>
-        <p className="text-gray-500 mt-1 mb-6 px-4">Drag and drop applications to update their status.</p>
-        <div className="flex-grow grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 overflow-x-auto">
+      <div className="p-4 sm:p-6 md:p-8 h-full flex flex-col">
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 px-2 sm:px-4">Kanban Board</h1>
+        <p className="text-sm sm:text-base text-gray-500 mt-1 mb-4 sm:mb-6 px-2 sm:px-4">Drag and drop applications to update their status.</p>
+        <div className="flex-grow grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 overflow-x-auto">
           {columns.map(col => (
             <KanbanColumn
               key={col.status}

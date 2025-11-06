@@ -24,13 +24,13 @@ const FilterControls: React.FC<FilterControlsProps> = ({ filter, setFilter }) =>
 
   return (
     <div className="w-full">
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 items-end">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4 items-end">
         {/* Search Input */}
-        <div className="sm:col-span-2 md:col-span-3 lg:col-span-2">
-            <label htmlFor="search" className="block text-sm font-medium text-gray-700 mb-1">Search</label>
+        <div className="sm:col-span-2 lg:col-span-2">
+            <label htmlFor="search" className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">Search</label>
             <div className="relative">
                 <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                    <Search className="h-5 w-5 text-gray-400" aria-hidden="true" />
+                    <Search className="h-4 w-4 sm:h-5 sm:w-5 text-gray-400" aria-hidden="true" />
                 </div>
                 <input
                     type="text"
@@ -39,20 +39,20 @@ const FilterControls: React.FC<FilterControlsProps> = ({ filter, setFilter }) =>
                     value={filter.search}
                     onChange={handleChange}
                     placeholder="Company, position, notes..."
-                    className="block w-full rounded-md border-2 border-gray-300 bg-white py-2 pl-10 pr-3 text-gray-900 placeholder-gray-500 shadow-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500 sm:text-sm transition-colors"
+                    className="block w-full rounded-md border-2 border-gray-300 bg-white py-2 pl-9 sm:pl-10 pr-3 text-sm text-gray-900 placeholder-gray-500 shadow-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500 transition-colors"
                 />
             </div>
         </div>
         
         {/* Status Select */}
         <div>
-          <label htmlFor="status" className="block text-sm font-medium text-gray-700 mb-1">Status</label>
+          <label htmlFor="status" className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">Status</label>
           <select
             id="status"
             name="status"
             value={filter.status}
             onChange={handleChange}
-            className="block w-full rounded-md border-2 border-gray-300 bg-white py-2 pl-3 pr-10 text-gray-900 shadow-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500 sm:text-sm transition-colors"
+            className="block w-full rounded-md border-2 border-gray-300 bg-white py-2 pl-3 pr-8 sm:pr-10 text-sm text-gray-900 shadow-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500 transition-colors"
           >
             <option value="All">All Statuses</option>
             {Object.values(Status).map(s => (
@@ -62,39 +62,39 @@ const FilterControls: React.FC<FilterControlsProps> = ({ filter, setFilter }) =>
         </div>
         
         {/* Date Range */}
-        <div className="grid grid-cols-2 gap-2">
+        <div className="grid grid-cols-2 gap-2 sm:col-span-2 lg:col-span-1">
             <div>
-                <label htmlFor="startDate" className="block text-sm font-medium text-gray-700 mb-1">From</label>
+                <label htmlFor="startDate" className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">From</label>
                 <input
                     type="date"
                     name="startDate"
                     id="startDate"
                     value={filter.startDate}
                     onChange={handleChange}
-                    className="block w-full rounded-md border-gray-300 bg-white py-2 px-3 text-gray-900 shadow-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500 sm:text-sm transition-colors"
+                    className="block w-full rounded-md border-gray-300 bg-white py-2 px-2 sm:px-3 text-xs sm:text-sm text-gray-900 shadow-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500 transition-colors"
                 />
             </div>
             <div>
-                <label htmlFor="endDate" className="block text-sm font-medium text-gray-700 mb-1">To</label>
+                <label htmlFor="endDate" className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">To</label>
                 <input
                     type="date"
                     name="endDate"
                     id="endDate"
                     value={filter.endDate}
                     onChange={handleChange}
-                    className="block w-full rounded-md border-gray-300 bg-white py-2 px-3 text-gray-900 shadow-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500 sm:text-sm transition-colors"
+                    className="block w-full rounded-md border-gray-300 bg-white py-2 px-2 sm:px-3 text-xs sm:text-sm text-gray-900 shadow-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500 transition-colors"
                 />
             </div>
         </div>
 
         {/* Reset Button */}
-        <div>
+        <div className="sm:col-span-2 lg:col-span-1">
             <button
                 type="button"
                 onClick={resetFilters}
                 className="w-full px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors"
             >
-                Reset
+                Reset Filters
             </button>
         </div>
       </div>

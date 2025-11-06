@@ -86,7 +86,7 @@ const DashboardPage: React.FC<DashboardPageProps> = ({
 
 
     return (
-        <div className="container mx-auto p-4 md:p-8 space-y-8">
+        <div className="container mx-auto p-4 sm:p-6 md:p-8 space-y-6 sm:space-y-8">
             <Dashboard
                 applications={applications}
                 onGenerateSummary={handleGenerateSummary}
@@ -99,17 +99,17 @@ const DashboardPage: React.FC<DashboardPageProps> = ({
                 onEditApplication={onEditApplication}
             />
 
-            <div className="bg-white p-6 rounded-xl shadow-md">
-                 <div className="flex flex-col md:flex-row justify-between items-start mb-6 gap-4">
-                    <div className="flex-grow">
+            <div className="bg-white p-4 sm:p-6 rounded-xl shadow-md">
+                 <div className="flex flex-col md:flex-row justify-between items-start mb-4 sm:mb-6 gap-4">
+                    <div className="flex-grow w-full">
                         <div className="flex justify-between items-center mb-2">
-                             <h2 className="text-2xl font-bold text-gray-700">My Applications</h2>
+                             <h2 className="text-xl sm:text-2xl font-bold text-gray-700">My Applications</h2>
                             <div className="flex items-center gap-2 p-1 bg-gray-100 rounded-lg">
-                                <button onClick={() => setView('list')} className={`px-3 py-1 text-sm font-medium rounded-md transition-colors ${view === 'list' ? 'bg-white text-primary-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}>
-                                    <List className="h-5 w-5" />
+                                <button onClick={() => setView('list')} className={`px-2 sm:px-3 py-1 text-sm font-medium rounded-md transition-colors ${view === 'list' ? 'bg-white text-primary-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}>
+                                    <List className="h-4 w-4 sm:h-5 sm:w-5" />
                                 </button>
-                                <button onClick={() => setView('calendar')} className={`px-3 py-1 text-sm font-medium rounded-md transition-colors ${view === 'calendar' ? 'bg-white text-primary-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}>
-                                    <CalendarIcon className="h-5 w-5" />
+                                <button onClick={() => setView('calendar')} className={`px-2 sm:px-3 py-1 text-sm font-medium rounded-md transition-colors ${view === 'calendar' ? 'bg-white text-primary-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}>
+                                    <CalendarIcon className="h-4 w-4 sm:h-5 sm:w-5" />
                                 </button>
                             </div>
                         </div>
@@ -135,14 +135,14 @@ const DashboardPage: React.FC<DashboardPageProps> = ({
                                 )}
                             </>
                         ) : (
-                            <div className="text-center py-16 border-2 border-dashed border-gray-200 rounded-lg">
-                                <h3 className="text-xl font-semibold text-gray-500">No matching applications found.</h3>
-                                <p className="text-gray-400 mt-2">Try adjusting your filters or adding a new application.</p>
+                            <div className="text-center py-12 sm:py-16 border-2 border-dashed border-gray-200 rounded-lg">
+                                <h3 className="text-lg sm:text-xl font-semibold text-gray-500">No matching applications found.</h3>
+                                <p className="text-sm sm:text-base text-gray-400 mt-2 px-4">Try adjusting your filters or adding a new application.</p>
                                 <button
                                     onClick={onAddApplication}
-                                    className="mt-4 inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors"
+                                    className="mt-4 inline-flex items-center px-4 sm:px-6 py-2 sm:py-3 border border-transparent text-sm sm:text-base font-medium rounded-md shadow-sm text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors"
                                 >
-                                    <PlusCircle className="mr-2 h-5 w-5" />
+                                    <PlusCircle className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
                                     Add Application
                                 </button>
                             </div>

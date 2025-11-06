@@ -10,13 +10,13 @@ interface DashboardProps {
 }
 
 const StatCard: React.FC<{ icon: React.ReactNode; title: string; value: number; color: string }> = ({ icon, title, value, color }) => (
-  <div className="bg-white p-6 rounded-xl shadow-md flex items-center space-x-4">
-    <div className={`p-3 rounded-full ${color}`}>
+  <div className="bg-white p-4 sm:p-6 rounded-xl shadow-md flex items-center space-x-3 sm:space-x-4">
+    <div className={`p-2 sm:p-3 rounded-full ${color}`}>
       {icon}
     </div>
     <div>
-      <p className="text-sm font-medium text-gray-500">{title}</p>
-      <p className="text-2xl font-bold text-gray-800">{value}</p>
+      <p className="text-xs sm:text-sm font-medium text-gray-500">{title}</p>
+      <p className="text-xl sm:text-2xl font-bold text-gray-800">{value}</p>
     </div>
   </div>
 );
@@ -31,26 +31,26 @@ const Dashboard: React.FC<DashboardProps> = ({ applications, onGenerateSummary, 
 
   return (
     <div className="space-y-6">
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
         <StatCard icon={<FileText className="h-6 w-6 text-blue-800"/>} title="Total Applied" value={stats.total} color="bg-blue-100"/>
         <StatCard icon={<Send className="h-6 w-6 text-indigo-800"/>} title="Pending Reply" value={stats.applied} color="bg-indigo-100"/>
         <StatCard icon={<Clock className="h-6 w-6 text-amber-800"/>} title="Interviewing" value={stats.interviewing} color="bg-amber-100"/>
         <StatCard icon={<CheckCircle className="h-6 w-6 text-green-800"/>} title="Offers" value={stats.offers} color="bg-green-100"/>
       </div>
       
-      <div className="bg-white p-6 rounded-xl shadow-md">
+      <div className="bg-white p-4 sm:p-6 rounded-xl shadow-md">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
-            <h3 className="text-lg font-semibold text-gray-800 flex items-center">
+            <h3 className="text-base sm:text-lg font-semibold text-gray-800 flex items-center">
               <Sparkles className="h-5 w-5 text-primary-500 mr-2" />
               AI-Powered Summary
             </h3>
-            <p className="text-sm text-gray-500 mt-1">Get a quick overview of your job search progress.</p>
+            <p className="text-xs sm:text-sm text-gray-500 mt-1">Get a quick overview of your job search progress.</p>
           </div>
           <button 
             onClick={onGenerateSummary}
             disabled={isSummaryLoading}
-            className="inline-flex items-center justify-center px-4 py-2 border border-primary-600 text-sm font-medium rounded-md text-primary-600 bg-white hover:bg-primary-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="w-full md:w-auto inline-flex items-center justify-center px-4 py-2 border border-primary-600 text-sm font-medium rounded-md text-primary-600 bg-white hover:bg-primary-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
           >
             {isSummaryLoading ? (
               <>
@@ -66,8 +66,8 @@ const Dashboard: React.FC<DashboardProps> = ({ applications, onGenerateSummary, 
           </button>
         </div>
         {summary && (
-          <div className="mt-4 p-4 bg-primary-50 border-l-4 border-primary-400 rounded-r-lg">
-            <p className="text-primary-800">{summary}</p>
+          <div className="mt-4 p-3 sm:p-4 bg-primary-50 border-l-4 border-primary-400 rounded-r-lg">
+            <p className="text-sm sm:text-base text-primary-800">{summary}</p>
           </div>
         )}
       </div>

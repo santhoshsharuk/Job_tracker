@@ -13,6 +13,7 @@ const App: React.FC = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingApplication, setEditingApplication] = useState<Application | null>(null);
   const [currentPage, setCurrentPage] = useState<Page>('dashboard');
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const handleAddApplication = () => {
     setEditingApplication(null);
@@ -65,10 +66,21 @@ const App: React.FC = () => {
 
   return (
     <div className="flex h-screen bg-gray-50 text-gray-900 font-sans">
-      <Sidebar currentPage={currentPage} setCurrentPage={setCurrentPage} />
+      <Sidebar 
+        currentPage={currentPage} 
+        setCurrentPage={(page) => {
+          setCurrentPage(page);
+          setIsSidebarOpen(false);
+        }}
+        isOpen={isSidebarOpen}
+        onClose={() => setIsSidebarOpen(false)}
+      />
       
       <div className="flex-1 flex flex-col overflow-hidden">
-        <Header onAddApplication={handleAddApplication} />
+        <Header 
+          onAddApplication={handleAddApplication}
+          onMenuClick={() => setIsSidebarOpen(true)}
+        />
         
         <main className="flex-1 overflow-x-hidden overflow-y-auto">
           {renderPage()}
