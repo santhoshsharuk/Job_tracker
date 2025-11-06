@@ -30,6 +30,7 @@ const Header: React.FC<HeaderProps> = ({ onAddApplication, onMenuClick }) => {
           </div>
           <button
             onClick={onAddApplication}
+            data-tutorial="add-button"
             className="inline-flex items-center px-3 sm:px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors"
           >
             <Plus className="h-5 w-5 sm:-ml-1 sm:mr-2" />

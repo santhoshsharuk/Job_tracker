@@ -5,18 +5,37 @@ import { Building, Edit, Calendar } from 'lucide-react';
 interface KanbanCardProps {
   application: Application;
   onEdit: (application: Application) => void;
+  onClick?: () => void;
+  isMobile?: boolean;
 }
 
-const KanbanCard: React.FC<KanbanCardProps> = ({ application, onEdit }) => {
+const KanbanCard: React.FC<KanbanCardProps> = ({ application, onEdit, onClick, isMobile = false }) => {
   const handleDragStart = (e: React.DragEvent<HTMLDivElement>) => {
     e.dataTransfer.setData('applicationId', application.id);
   };
 
+  const handleCardClick = (e: React.MouseEvent) => {
+    if (isMobile && onClick) {
+      e.stopPropagation();
+      onClick();
+    }
+  };
+
+  const handleEditClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    onEdit(application);
+  };
+
   return (
     <div
-      draggable
+      draggable={!isMobile}
       onDragStart={handleDragStart}
-      className="bg-white p-3 sm:p-4 rounded-lg shadow-md border border-gray-200 cursor-grab active:cursor-grabbing touch-manipulation"
+      onClick={handleCardClick}
+      className={`bg-white p-3 sm:p-4 rounded-lg shadow-md border border-gray-200 transition-all ${
+        isMobile 
+          ? 'cursor-pointer active:scale-95 active:shadow-lg' 
+          : 'cursor-grab active:cursor-grabbing'
+      } touch-manipulation`}
     >
       <div className="flex justify-between items-start gap-2">
         <div className="flex-1 min-w-0">
@@ -27,8 +46,8 @@ const KanbanCard: React.FC<KanbanCardProps> = ({ application, onEdit }) => {
           </p>
         </div>
         <button
-          onClick={() => onEdit(application)}
-          className="p-1.5 sm:p-2 text-gray-400 hover:text-primary-600 hover:bg-gray-100 rounded-full transition-colors flex-shrink-0"
+          onClick={handleEditClick}
+          className="p-1.5 sm:p-2 text-gray-400 hover:text-primary-600 hover:bg-gray-100 rounded-full transition-colors flex-shrink-0 z-10"
           aria-label={`Edit ${application.position}`}
         >
           <Edit className="h-4 w-4" />

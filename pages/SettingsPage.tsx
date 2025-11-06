@@ -4,6 +4,7 @@ import ExportControls from '../components/ExportControls';
 import ImportControls from '../components/ImportControls';
 import GoogleDriveSync from '../components/GoogleDriveSync';
 import { useLocalStorage } from '../hooks/useLocalStorage';
+import { HelpCircle } from 'lucide-react';
 
 interface SettingsPageProps {
   applications: Application[];
@@ -39,6 +40,11 @@ const SettingsPage: React.FC<SettingsPageProps> = ({ applications, setApplicatio
     setGeminiApiKey('');
     setSaveMessage('API key cleared!');
     setTimeout(() => setSaveMessage(''), 3000);
+  };
+
+  const handleRestartTutorial = () => {
+    localStorage.removeItem('jobTracker_tutorialCompleted');
+    window.location.reload();
   };
 
   return (
@@ -119,6 +125,27 @@ const SettingsPage: React.FC<SettingsPageProps> = ({ applications, setApplicatio
       <div className="bg-white p-4 sm:p-6 rounded-xl shadow-md">
         <h2 className="text-lg sm:text-xl font-bold text-gray-700 mb-4 border-b pb-3">Cloud Sync</h2>
         <GoogleDriveSync applications={applications} setApplications={setApplications} />
+      </div>
+
+      <div className="bg-white p-4 sm:p-6 rounded-xl shadow-md">
+        <h2 className="text-lg sm:text-xl font-bold text-gray-700 mb-4 border-b pb-3">Help & Support</h2>
+        <div className="space-y-4">
+          <div>
+            <h3 className="text-base sm:text-lg font-semibold text-gray-800 flex items-center gap-2">
+              <HelpCircle className="h-5 w-5 text-primary-600" />
+              Getting Started
+            </h3>
+            <p className="text-xs sm:text-sm text-gray-500 mb-4 mt-2">
+              Need help? Restart the interactive tutorial to learn how to use Job Tracker.
+            </p>
+            <button
+              onClick={handleRestartTutorial}
+              className="w-full sm:w-auto px-6 py-2 text-sm sm:text-base bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors font-medium"
+            >
+              Restart Tutorial
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );

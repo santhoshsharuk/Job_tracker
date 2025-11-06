@@ -15,11 +15,13 @@ const NavLink: React.FC<{
   setCurrentPage: (page: Page) => void;
   icon: React.ReactNode;
   text: string;
-}> = ({ page, currentPage, setCurrentPage, icon, text }) => {
+  dataTutorial?: string;
+}> = ({ page, currentPage, setCurrentPage, icon, text, dataTutorial }) => {
   const isActive = currentPage === page;
   return (
     <button
       onClick={() => setCurrentPage(page)}
+      data-tutorial={dataTutorial}
       className={`flex items-center w-full px-4 py-3 text-sm font-medium rounded-lg transition-colors ${
         isActive
           ? 'bg-primary-700 text-white'
@@ -44,7 +46,7 @@ const Sidebar: React.FC<SidebarProps> = ({ currentPage, setCurrentPage, isOpen, 
       )}
       
       {/* Sidebar */}
-      <nav className={`
+      <nav data-tutorial="sidebar" className={`
         fixed lg:static inset-y-0 left-0 z-50
         w-64 bg-gray-800 text-white flex flex-col p-4 flex-shrink-0
         transform transition-transform duration-300 ease-in-out
@@ -71,6 +73,7 @@ const Sidebar: React.FC<SidebarProps> = ({ currentPage, setCurrentPage, isOpen, 
             setCurrentPage={setCurrentPage}
             icon={<LayoutDashboard className="h-5 w-5" />}
             text="Dashboard"
+            dataTutorial="dashboard-link"
           />
           <NavLink
             page="kanban"
@@ -78,6 +81,7 @@ const Sidebar: React.FC<SidebarProps> = ({ currentPage, setCurrentPage, isOpen, 
             setCurrentPage={setCurrentPage}
             icon={<Columns className="h-5 w-5" />}
             text="Kanban Board"
+            dataTutorial="kanban-link"
           />
           <NavLink
             page="settings"
@@ -85,6 +89,7 @@ const Sidebar: React.FC<SidebarProps> = ({ currentPage, setCurrentPage, isOpen, 
             setCurrentPage={setCurrentPage}
             icon={<Settings className="h-5 w-5" />}
             text="Settings"
+            dataTutorial="settings-link"
           />
         </div>
       </nav>
