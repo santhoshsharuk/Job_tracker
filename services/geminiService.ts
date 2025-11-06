@@ -4,11 +4,29 @@
 import { GoogleGenAI } from "@google/genai";
 import { Application } from '../types';
 
-// FIX: Per @google/genai guidelines, initialize the client at the module level.
-// The logic is simplified into a helper function to handle cases where the API key is not provided.
+// Get API key from localStorage or fall back to environment variable
+const getApiKey = (): string | null => {
+  // Try to get from localStorage first (user's personal API key)
+  const storedKey = localStorage.getItem('gemini_api_key');
+  if (storedKey && storedKey.trim() !== '') {
+    // Remove quotes if stored as JSON string
+    return storedKey.replace(/^"(.*)"$/, '$1');
+  }
+  
+  // Fall back to environment variable
+  const envKey = import.meta.env.VITE_GEMINI_API_KEY;
+  if (envKey && envKey !== "YOUR_GEMINI_API_KEY") {
+    return envKey;
+  }
+  
+  return null;
+};
+
+// Initialize AI client dynamically
 const getAiClient = (): GoogleGenAI | null => {
-  const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
-  if (apiKey && apiKey !== "YOUR_GEMINI_API_KEY") {
+  const apiKey = getApiKey();
+  
+  if (apiKey) {
     try {
       return new GoogleGenAI({ apiKey });
     } catch (error) {
@@ -16,15 +34,16 @@ const getAiClient = (): GoogleGenAI | null => {
       return null;
     }
   }
-  console.warn("Gemini API key not set in .env file. AI features will be disabled.");
+  
+  console.warn("Gemini API key not configured. Please add your API key in Settings.");
   return null;
 };
 
-const ai = getAiClient();
-
 export const generateSummary = async (applications: Application[]): Promise<string> => {
+  const ai = getAiClient();
+  
   if (!ai) {
-    return "AI features are disabled. Please configure your Gemini API key in the .env file.";
+    return "AI features are disabled. Please add your Gemini API key in Settings to enable AI-powered insights.";
   }
   
   if (applications.length === 0) {
