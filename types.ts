@@ -21,4 +21,8 @@ export interface Application {
 export interface Filter {
   search: string;
   status: Status | 'All';
+  startDate: string;
+  endDate: string;
 }
+
+export type Page = 'dashboard' | 'kanban' | 'settings';
