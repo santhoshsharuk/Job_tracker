@@ -39,7 +39,7 @@ const FilterControls: React.FC<FilterControlsProps> = ({ filter, setFilter }) =>
                     value={filter.search}
                     onChange={handleChange}
                     placeholder="Company, position, notes..."
-                    className="block w-full rounded-md border-gray-300 bg-white py-2 pl-10 pr-3 text-gray-900 placeholder-gray-500 shadow-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500 sm:text-sm transition-colors"
+                    className="block w-full rounded-md border-2 border-gray-300 bg-white py-2 pl-10 pr-3 text-gray-900 placeholder-gray-500 shadow-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500 sm:text-sm transition-colors"
                 />
             </div>
         </div>
@@ -52,7 +52,7 @@ const FilterControls: React.FC<FilterControlsProps> = ({ filter, setFilter }) =>
             name="status"
             value={filter.status}
             onChange={handleChange}
-            className="block w-full rounded-md border-gray-300 bg-white py-2 pl-3 pr-10 text-gray-900 shadow-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500 sm:text-sm transition-colors"
+            className="block w-full rounded-md border-2 border-gray-300 bg-white py-2 pl-3 pr-10 text-gray-900 shadow-sm focus:border-primary-500 focus:outline-none focus:ring-1 focus:ring-primary-500 sm:text-sm transition-colors"
           >
             <option value="All">All Statuses</option>
             {Object.values(Status).map(s => (

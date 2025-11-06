@@ -92,21 +92,21 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({ application, onSave, 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label htmlFor="company" className="block text-sm font-medium text-gray-700">Company</label>
-                <input type="text" name="company" value={formData.company} onChange={handleChange} required className="mt-1 block w-full rounded-lg border-gray-200 bg-slate-50 px-4 py-3 text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition"/>
+                <input type="text" name="company" value={formData.company} onChange={handleChange} required className="mt-1 block w-full rounded-lg border-2 border-gray-300 bg-slate-50 px-4 py-3 text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition"/>
               </div>
               <div>
                 <label htmlFor="position" className="block text-sm font-medium text-gray-700">Position</label>
-                <input type="text" name="position" value={formData.position} onChange={handleChange} required className="mt-1 block w-full rounded-lg border-gray-200 bg-slate-50 px-4 py-3 text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition"/>
+                <input type="text" name="position" value={formData.position} onChange={handleChange} required className="mt-1 block w-full rounded-lg border-2 border-gray-300 bg-slate-50 px-4 py-3 text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition"/>
               </div>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
                 <label htmlFor="appliedDate" className="block text-sm font-medium text-gray-700">Applied Date</label>
-                <input type="date" name="appliedDate" value={formData.appliedDate} onChange={handleChange} required className="mt-1 block w-full rounded-lg border-gray-200 bg-slate-50 px-4 py-3 text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition"/>
+                <input type="date" name="appliedDate" value={formData.appliedDate} onChange={handleChange} required className="mt-1 block w-full rounded-lg border-2 border-gray-300 bg-slate-50 px-4 py-3 text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition"/>
               </div>
               <div>
                 <label htmlFor="status" className="block text-sm font-medium text-gray-700">Status</label>
-                <select name="status" value={formData.status} onChange={handleChange} className="mt-1 block w-full rounded-lg border-gray-200 bg-slate-50 px-4 py-3 text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition">
+                <select name="status" value={formData.status} onChange={handleChange} className="mt-1 block w-full rounded-lg border-2 border-gray-300 bg-slate-50 px-4 py-3 text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition">
                   {Object.values(Status).map(s => <option key={s} value={s}>{s}</option>)}
                 </select>
               </div>
@@ -114,11 +114,11 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({ application, onSave, 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                <div>
                 <label htmlFor="source" className="block text-sm font-medium text-gray-700">Source (e.g., LinkedIn)</label>
-                <input type="text" name="source" value={formData.source} onChange={handleChange} className="mt-1 block w-full rounded-lg border-gray-200 bg-slate-50 px-4 py-3 text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition"/>
+                <input type="text" name="source" value={formData.source} onChange={handleChange} className="mt-1 block w-full rounded-lg border-2 border-gray-300 bg-slate-50 px-4 py-3 text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition"/>
               </div>
               <div>
                 <label htmlFor="jobLink" className="block text-sm font-medium text-gray-700">Job Post Link</label>
-                <input type="url" name="jobLink" value={formData.jobLink} onChange={handleChange} className="mt-1 block w-full rounded-lg border-gray-200 bg-slate-50 px-4 py-3 text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition"/>
+                <input type="url" name="jobLink" value={formData.jobLink} onChange={handleChange} className="mt-1 block w-full rounded-lg border-2 border-gray-300 bg-slate-50 px-4 py-3 text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition"/>
               </div>
             </div>
             <div>
