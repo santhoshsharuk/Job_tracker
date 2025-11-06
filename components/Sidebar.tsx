@@ -34,9 +34,9 @@ const Sidebar: React.FC<SidebarProps> = ({ currentPage, setCurrentPage }) => {
   return (
     <nav className="w-64 bg-gray-800 text-white flex flex-col p-4 flex-shrink-0">
       <div className="flex items-center mb-8 px-2">
-        <Briefcase className="h-8 w-8 text-primary-500" />
+        <img src="assets/logo.png" alt="Job Tracker Logo" className="h-8 w-8" />
         <h1 className="ml-3 text-xl font-bold tracking-tight">
-          Gemini Job Tracker
+          Job Tracker
         </h1>
       </div>
       <div className="space-y-2">

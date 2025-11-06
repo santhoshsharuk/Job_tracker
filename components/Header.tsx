@@ -12,9 +12,9 @@ const Header: React.FC<HeaderProps> = ({ onAddApplication }) => {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center py-4">
           <div className="flex items-center">
-            <Briefcase className="h-8 w-8 text-primary-600" />
+            <img src="assets/logo.png" alt="Job Tracker Logo" className="h-8 w-8" />
             <h1 className="ml-3 text-2xl font-bold text-gray-800 tracking-tight">
-              Gemini Job Tracker
+              Job Tracker
             </h1>
           </div>
           <button
