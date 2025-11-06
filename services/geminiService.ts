@@ -1,18 +1,30 @@
+// FIX: Add reference to vite/client to resolve `import.meta.env` type error.
+/// <reference types="vite/client" />
 
 import { GoogleGenAI } from "@google/genai";
 import { Application } from '../types';
 
-const API_KEY = process.env.API_KEY;
+// FIX: Per @google/genai guidelines, initialize the client at the module level.
+// The logic is simplified into a helper function to handle cases where the API key is not provided.
+const getAiClient = (): GoogleGenAI | null => {
+  const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+  if (apiKey && apiKey !== "YOUR_GEMINI_API_KEY") {
+    try {
+      return new GoogleGenAI({ apiKey });
+    } catch (error) {
+      console.error("Failed to initialize Gemini AI:", error);
+      return null;
+    }
+  }
+  console.warn("Gemini API key not set in .env file. AI features will be disabled.");
+  return null;
+};
 
-if (!API_KEY) {
-  console.warn("API_KEY environment variable not set. AI features will be disabled.");
-}
-
-const ai = new GoogleGenAI({ apiKey: API_KEY! });
+const ai = getAiClient();
 
 export const generateSummary = async (applications: Application[]): Promise<string> => {
-  if (!API_KEY) {
-    return "AI features are disabled. Please configure your API key.";
+  if (!ai) {
+    return "AI features are disabled. Please configure your Gemini API key in the .env file.";
   }
   
   if (applications.length === 0) {

@@ -1,3 +1,6 @@
+// FIX: Add reference to vite/client to resolve `import.meta.env` type error.
+/// <reference types="vite/client" />
+
 import { Application } from '../types';
 
 // FIX: Add type definitions for Google API and Identity Services to the global window object.
@@ -8,10 +11,9 @@ declare global {
   }
 }
 
-// IMPORTANT: Replace with your own Google Cloud project's credentials.
-// You can create them here: https://console.cloud.google.com/apis/credentials
-const CLIENT_ID = '1067849573023-lrfn8lctob06i8sk2urlntbqahr2pbe8.apps.googleusercontent.com';
-const API_KEY = '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'; // This is a browser key
+// Read credentials from environment variables
+const CLIENT_ID = import.meta.env.VITE_GOOGLE_DRIVE_CLIENT_ID;
+const API_KEY = import.meta.env.VITE_GOOGLE_DRIVE_API_KEY;
 
 const DISCOVERY_DOC = 'https://www.googleapis.com/discovery/v1/apis/drive/v3/rest';
 const SCOPES = 'https://www.googleapis.com/auth/drive.file';
@@ -45,8 +47,8 @@ export function loadGapiScript(callback: () => void) {
  * Initializes the GAPI client.
  */
 export function initGapiClient(callback: () => void) {
-  if (CLIENT_ID === 'YOUR_CLIENT_ID.apps.googleusercontent.com' || API_KEY === 'YOUR_API_KEY') {
-    console.warn("Google Drive Sync is not configured. Please provide your Client ID and API Key in `services/googleDriveService.ts`.");
+  if (!CLIENT_ID || CLIENT_ID === 'YOUR_GOOGLE_DRIVE_CLIENT_ID' || !API_KEY || API_KEY === 'YOUR_GOOGLE_DRIVE_API_KEY') {
+    console.warn("Google Drive Sync is not configured. Please provide your Client ID and API Key in the `.env` file.");
     return;
   }
   window.gapi.load('client', async () => {

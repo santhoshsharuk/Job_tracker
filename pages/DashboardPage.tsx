@@ -1,11 +1,13 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Application, Filter } from '../types';
 import Dashboard from '../components/Dashboard';
 import FilterControls from '../components/FilterControls';
 import ApplicationList from '../components/ApplicationList';
 import UpcomingReminders from '../components/UpcomingReminders';
+import CalendarView from '../components/CalendarView';
+import PaginationControls from '../components/PaginationControls';
 import { generateSummary } from '../services/geminiService';
-import { PlusCircle } from 'lucide-react';
+import { PlusCircle, List, Calendar as CalendarIcon } from 'lucide-react';
 
 interface DashboardPageProps {
     applications: Application[];
@@ -13,6 +15,8 @@ interface DashboardPageProps {
     onEditApplication: (app: Application) => void;
     onDeleteApplication: (id: string) => void;
 }
+
+const ITEMS_PER_PAGE = 10;
 
 const DashboardPage: React.FC<DashboardPageProps> = ({
     applications,
@@ -23,6 +27,8 @@ const DashboardPage: React.FC<DashboardPageProps> = ({
     const [filter, setFilter] = useState<Filter>({ search: '', status: 'All', startDate: '', endDate: '' });
     const [aiSummary, setAiSummary] = useState<string>('');
     const [isSummaryLoading, setIsSummaryLoading] = useState<boolean>(false);
+    const [view, setView] = useState<'list' | 'calendar'>('list');
+    const [currentPage, setCurrentPage] = useState(1);
 
     const handleGenerateSummary = async () => {
         setIsSummaryLoading(true);
@@ -65,6 +71,19 @@ const DashboardPage: React.FC<DashboardPageProps> = ({
             })
             .sort((a, b) => new Date(b.appliedDate).getTime() - new Date(a.appliedDate).getTime());
     }, [applications, filter]);
+    
+    // Reset to page 1 when filters change
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [filter]);
+
+    // Pagination logic
+    const totalPages = Math.ceil(filteredApplications.length / ITEMS_PER_PAGE);
+    const paginatedApplications = filteredApplications.slice(
+        (currentPage - 1) * ITEMS_PER_PAGE,
+        currentPage * ITEMS_PER_PAGE
+    );
+
 
     return (
         <div className="container mx-auto p-4 md:p-8 space-y-8">
@@ -81,30 +100,59 @@ const DashboardPage: React.FC<DashboardPageProps> = ({
             />
 
             <div className="bg-white p-6 rounded-xl shadow-md">
-                <div className="flex flex-col md:flex-row justify-between items-start mb-6 gap-4">
+                 <div className="flex flex-col md:flex-row justify-between items-start mb-6 gap-4">
                     <div className="flex-grow">
-                        <h2 className="text-2xl font-bold text-gray-700 mb-2">My Applications</h2>
-                        <FilterControls filter={filter} setFilter={setFilter} />
+                        <div className="flex justify-between items-center mb-2">
+                             <h2 className="text-2xl font-bold text-gray-700">My Applications</h2>
+                            <div className="flex items-center gap-2 p-1 bg-gray-100 rounded-lg">
+                                <button onClick={() => setView('list')} className={`px-3 py-1 text-sm font-medium rounded-md transition-colors ${view === 'list' ? 'bg-white text-primary-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}>
+                                    <List className="h-5 w-5" />
+                                </button>
+                                <button onClick={() => setView('calendar')} className={`px-3 py-1 text-sm font-medium rounded-md transition-colors ${view === 'calendar' ? 'bg-white text-primary-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}>
+                                    <CalendarIcon className="h-5 w-5" />
+                                </button>
+                            </div>
+                        </div>
+                        {view === 'list' && <FilterControls filter={filter} setFilter={setFilter} />}
                     </div>
                 </div>
-                {filteredApplications.length > 0 ? (
-                    <ApplicationList
-                        applications={filteredApplications}
-                        onEdit={onEditApplication}
-                        onDelete={onDeleteApplication}
-                    />
+
+                {view === 'list' ? (
+                     <>
+                        {filteredApplications.length > 0 ? (
+                            <>
+                                <ApplicationList
+                                    applications={paginatedApplications}
+                                    onEdit={onEditApplication}
+                                    onDelete={onDeleteApplication}
+                                />
+                                {totalPages > 1 && (
+                                    <PaginationControls
+                                        currentPage={currentPage}
+                                        totalPages={totalPages}
+                                        onPageChange={setCurrentPage}
+                                    />
+                                )}
+                            </>
+                        ) : (
+                            <div className="text-center py-16 border-2 border-dashed border-gray-200 rounded-lg">
+                                <h3 className="text-xl font-semibold text-gray-500">No matching applications found.</h3>
+                                <p className="text-gray-400 mt-2">Try adjusting your filters or adding a new application.</p>
+                                <button
+                                    onClick={onAddApplication}
+                                    className="mt-4 inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors"
+                                >
+                                    <PlusCircle className="mr-2 h-5 w-5" />
+                                    Add Application
+                                </button>
+                            </div>
+                        )}
+                    </>
                 ) : (
-                    <div className="text-center py-16 border-2 border-dashed border-gray-200 rounded-lg">
-                        <h3 className="text-xl font-semibold text-gray-500">No matching applications found.</h3>
-                        <p className="text-gray-400 mt-2">Try adjusting your filters or adding a new application.</p>
-                        <button
-                            onClick={onAddApplication}
-                            className="mt-4 inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 transition-colors"
-                        >
-                            <PlusCircle className="mr-2 h-5 w-5" />
-                            Add Application
-                        </button>
-                    </div>
+                    <CalendarView 
+                        applications={filteredApplications} 
+                        onEditApplication={onEditApplication} 
+                    />
                 )}
             </div>
         </div>
