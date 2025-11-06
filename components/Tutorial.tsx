@@ -15,9 +15,10 @@ interface InteractiveTutorialProps {
   steps: InteractiveTutorialStep[];
   onComplete: () => void;
   onSkip: () => void;
+  onStepChange?: (step: number) => void;
 }
 
-const InteractiveTutorial: React.FC<InteractiveTutorialProps> = ({ steps, onComplete, onSkip }) => {
+const InteractiveTutorial: React.FC<InteractiveTutorialProps> = ({ steps, onComplete, onSkip, onStepChange }) => {
   const [currentStep, setCurrentStep] = useState(0);
   const [targetElement, setTargetElement] = useState<HTMLElement | null>(null);
   const [tooltipPosition, setTooltipPosition] = useState({ top: 0, left: 0 });
@@ -27,6 +28,25 @@ const InteractiveTutorial: React.FC<InteractiveTutorialProps> = ({ steps, onComp
 
   const step = steps[currentStep];
   const isLastStep = currentStep === steps.length - 1;
+
+  // Notify parent when step changes
+  useEffect(() => {
+    if (onStepChange) {
+      onStepChange(currentStep);
+    }
+  }, [currentStep, onStepChange]);
+
+  // Prevent body scroll on mobile when tutorial is active
+  useEffect(() => {
+    const isMobile = window.innerWidth < 768;
+    if (isMobile) {
+      const originalOverflow = document.body.style.overflow;
+      document.body.style.overflow = 'hidden';
+      return () => {
+        document.body.style.overflow = originalOverflow;
+      };
+    }
+  }, []);
 
   // Handle window resize to reposition tooltip
   useEffect(() => {
@@ -50,51 +70,85 @@ const InteractiveTutorial: React.FC<InteractiveTutorialProps> = ({ steps, onComp
       if (element) {
         setTargetElement(element);
         
-        // Scroll element into view
+        // Scroll element into view - different behavior for mobile
         setTimeout(() => {
-          element.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });
+          const isMobile = window.innerWidth < 768;
+          if (isMobile) {
+            // On mobile, scroll with more top space to accommodate tooltip
+            element.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'center' });
+            // Add extra scroll to give space for tooltip
+            window.scrollBy({ top: -100, behavior: 'smooth' });
+          } else {
+            element.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });
+          }
         }, 100);
         
         // Calculate tooltip position
         const updatePosition = () => {
           const rect = element.getBoundingClientRect();
-          const tooltipWidth = 320;
-          const tooltipHeight = 200;
-          const padding = 20;
+          const isMobile = window.innerWidth < 768;
+          const tooltipWidth = isMobile ? Math.min(window.innerWidth - 32, 320) : 320;
+          const tooltipHeight = isMobile ? 220 : 200;
+          const padding = isMobile ? 16 : 20;
           
           let top = 0;
           let left = 0;
           
-          switch (step.position) {
-            case 'bottom':
+          // On mobile, always position at bottom or top for better UX
+          if (isMobile) {
+            const spaceBelow = window.innerHeight - rect.bottom;
+            const spaceAbove = rect.top;
+            
+            if (spaceBelow > tooltipHeight + padding) {
+              // Position below
               top = rect.bottom + padding;
-              left = rect.left + (rect.width / 2) - (tooltipWidth / 2);
-              break;
-            case 'top':
+              left = padding;
+            } else if (spaceAbove > tooltipHeight + padding) {
+              // Position above
               top = rect.top - tooltipHeight - padding;
-              left = rect.left + (rect.width / 2) - (tooltipWidth / 2);
-              break;
-            case 'right':
-              top = rect.top + (rect.height / 2) - (tooltipHeight / 2);
-              left = rect.right + padding;
-              break;
-            case 'left':
-              top = rect.top + (rect.height / 2) - (tooltipHeight / 2);
-              left = rect.left - tooltipWidth - padding;
-              break;
-            default:
-              top = rect.bottom + padding;
-              left = rect.left + (rect.width / 2) - (tooltipWidth / 2);
-          }
-          
-          // Keep tooltip within viewport
-          if (left < padding) left = padding;
-          if (left + tooltipWidth > window.innerWidth - padding) {
-            left = window.innerWidth - tooltipWidth - padding;
-          }
-          if (top < padding) top = rect.bottom + padding;
-          if (top + tooltipHeight > window.innerHeight - padding) {
-            top = window.innerHeight - tooltipHeight - padding;
+              left = padding;
+            } else {
+              // Position at bottom if element is near top, otherwise at top
+              if (rect.top < window.innerHeight / 2) {
+                top = rect.bottom + padding;
+              } else {
+                top = Math.max(padding, window.innerHeight - tooltipHeight - padding);
+              }
+              left = padding;
+            }
+          } else {
+            // Desktop positioning logic
+            switch (step.position) {
+              case 'bottom':
+                top = rect.bottom + padding;
+                left = rect.left + (rect.width / 2) - (tooltipWidth / 2);
+                break;
+              case 'top':
+                top = rect.top - tooltipHeight - padding;
+                left = rect.left + (rect.width / 2) - (tooltipWidth / 2);
+                break;
+              case 'right':
+                top = rect.top + (rect.height / 2) - (tooltipHeight / 2);
+                left = rect.right + padding;
+                break;
+              case 'left':
+                top = rect.top + (rect.height / 2) - (tooltipHeight / 2);
+                left = rect.left - tooltipWidth - padding;
+                break;
+              default:
+                top = rect.bottom + padding;
+                left = rect.left + (rect.width / 2) - (tooltipWidth / 2);
+            }
+            
+            // Keep tooltip within viewport
+            if (left < padding) left = padding;
+            if (left + tooltipWidth > window.innerWidth - padding) {
+              left = window.innerWidth - tooltipWidth - padding;
+            }
+            if (top < padding) top = rect.bottom + padding;
+            if (top + tooltipHeight > window.innerHeight - padding) {
+              top = window.innerHeight - tooltipHeight - padding;
+            }
           }
           
           setTooltipPosition({ top, left });
@@ -158,8 +212,9 @@ const InteractiveTutorial: React.FC<InteractiveTutorialProps> = ({ steps, onComp
     if (!targetElement) return '';
     
     const rect = targetElement.getBoundingClientRect();
-    const padding = 8;
-    const borderRadius = 12;
+    const isMobile = window.innerWidth < 768;
+    const padding = isMobile ? 12 : 8; // More padding on mobile for better touch targets
+    const borderRadius = isMobile ? 16 : 12; // Larger radius on mobile
     
     const x = Math.max(0, rect.left - padding);
     const y = Math.max(0, rect.top - padding);
@@ -205,7 +260,7 @@ const InteractiveTutorial: React.FC<InteractiveTutorialProps> = ({ steps, onComp
         </defs>
         <path
           d={getSpotlightPath()}
-          fill="rgba(0, 0, 0, 0.75)"
+          fill={window.innerWidth < 768 ? "rgba(0, 0, 0, 0.85)" : "rgba(0, 0, 0, 0.75)"}
           fillRule="evenodd"
         />
       </svg>
@@ -213,51 +268,83 @@ const InteractiveTutorial: React.FC<InteractiveTutorialProps> = ({ steps, onComp
       {/* Pulse animation on highlighted element */}
       {targetElement && pulseAnimation && (() => {
         const rect = targetElement.getBoundingClientRect();
+        const isMobile = window.innerWidth < 768;
         return (
-          <div
-            className="fixed pointer-events-none animate-ping"
-            style={{
-              top: rect.top - 4,
-              left: rect.left - 4,
-              width: rect.width + 8,
-              height: rect.height + 8,
-              zIndex: 1000,
-              border: '3px solid #3b82f6',
-              borderRadius: '12px',
-            }}
-          />
+          <>
+            {/* Primary pulse ring */}
+            <div
+              className="fixed pointer-events-none animate-ping"
+              style={{
+                top: rect.top - 4,
+                left: rect.left - 4,
+                width: rect.width + 8,
+                height: rect.height + 8,
+                zIndex: 1000,
+                border: isMobile ? '2px solid #3b82f6' : '3px solid #3b82f6',
+                borderRadius: '12px',
+                animationDuration: '1.5s',
+              }}
+            />
+            {/* Solid highlight border */}
+            <div
+              className="fixed pointer-events-none"
+              style={{
+                top: rect.top - 4,
+                left: rect.left - 4,
+                width: rect.width + 8,
+                height: rect.height + 8,
+                zIndex: 1000,
+                border: isMobile ? '2px solid #3b82f6' : '3px solid #3b82f6',
+                borderRadius: '12px',
+                boxShadow: '0 0 20px rgba(59, 130, 246, 0.5)',
+              }}
+            />
+          </>
         );
       })()}
 
       {/* Pointing hand cursor animation */}
       {targetElement && step.waitForAction && (() => {
         const rect = targetElement.getBoundingClientRect();
+        const isMobile = window.innerWidth < 768;
+        
+        // On mobile, position hand above the element, on desktop to the right
+        const handTop = isMobile 
+          ? rect.top - 40 
+          : rect.top + rect.height / 2 - 12;
+        const handLeft = isMobile 
+          ? rect.left + rect.width / 2 - 12 
+          : Math.min(rect.right + 20, window.innerWidth - 50);
+        
         return (
           <div
             className="fixed pointer-events-none animate-bounce"
             style={{
-              top: rect.top + rect.height / 2 - 12,
-              left: rect.right + 20,
+              top: handTop,
+              left: handLeft,
               zIndex: 1002,
             }}
           >
-            <Hand className="h-8 w-8 text-primary-600 fill-primary-600" />
+            <Hand 
+              className={`h-8 w-8 text-primary-600 fill-primary-600 ${isMobile ? 'rotate-90' : ''}`}
+            />
           </div>
         );
       })()}
 
       {/* Tooltip */}
       <div
-        className="fixed z-[1003] bg-white rounded-2xl shadow-2xl p-6 max-w-sm"
+        className="fixed z-[1003] bg-white rounded-2xl shadow-2xl p-4 sm:p-6 max-w-sm mx-4 sm:mx-0"
         style={{
           top: `${tooltipPosition.top}px`,
           left: `${tooltipPosition.left}px`,
           animation: 'fadeIn 0.3s ease-out',
+          width: window.innerWidth < 768 ? `${window.innerWidth - 32}px` : 'auto',
         }}
       >
-        <div className="flex justify-between items-start mb-3">
+        <div className="flex justify-between items-start mb-2 sm:mb-3">
           <div className="flex items-center gap-2">
-            <span className="px-3 py-1 bg-primary-100 text-primary-600 text-xs font-semibold rounded-full">
+            <span className="px-2 sm:px-3 py-1 bg-primary-100 text-primary-600 text-xs font-semibold rounded-full">
               Step {currentStep + 1} of {steps.length}
             </span>
           </div>
@@ -270,25 +357,25 @@ const InteractiveTutorial: React.FC<InteractiveTutorialProps> = ({ steps, onComp
           </button>
         </div>
 
-        <h3 className="text-xl font-bold text-gray-800 mb-2">{step.title}</h3>
-        <p className="text-gray-600 text-sm mb-4 leading-relaxed">{step.description}</p>
+        <h3 className="text-lg sm:text-xl font-bold text-gray-800 mb-2">{step.title}</h3>
+        <p className="text-gray-600 text-sm mb-3 sm:mb-4 leading-relaxed">{step.description}</p>
 
         {step.waitForAction ? (
           <div className="flex items-center gap-2 text-primary-600 text-sm font-medium">
             <ArrowDown className="h-4 w-4 animate-bounce" />
-            <span>Click the highlighted element to continue</span>
+            <span className="text-xs sm:text-sm">Tap the highlighted element to continue</span>
           </div>
         ) : (
-          <div className="flex justify-between items-center">
+          <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-2 sm:gap-0">
             <button
               onClick={handleSkip}
-              className="px-3 py-2 text-sm text-gray-600 hover:text-gray-800 transition-colors"
+              className="px-3 py-2 text-sm text-gray-600 hover:text-gray-800 transition-colors order-2 sm:order-1"
             >
               Skip Tutorial
             </button>
             <button
               onClick={handleNext}
-              className="px-5 py-2 bg-primary-600 text-white text-sm font-medium rounded-lg hover:bg-primary-700 transition-colors"
+              className="px-5 py-2.5 bg-primary-600 text-white text-sm font-medium rounded-lg hover:bg-primary-700 transition-colors order-1 sm:order-2"
             >
               {isLastStep ? 'Finish' : 'Next'}
             </button>
@@ -296,16 +383,16 @@ const InteractiveTutorial: React.FC<InteractiveTutorialProps> = ({ steps, onComp
         )}
 
         {/* Progress dots */}
-        <div className="flex justify-center gap-1.5 mt-4 pt-4 border-t border-gray-200">
+        <div className="flex justify-center gap-2 mt-3 sm:mt-4 pt-3 sm:pt-4 border-t border-gray-200">
           {steps.map((_, index) => (
             <div
               key={index}
-              className={`h-1.5 rounded-full transition-all ${
+              className={`h-2 sm:h-1.5 rounded-full transition-all ${
                 index === currentStep
-                  ? 'w-6 bg-primary-600'
+                  ? 'w-8 sm:w-6 bg-primary-600'
                   : index < currentStep
-                  ? 'w-1.5 bg-primary-300'
-                  : 'w-1.5 bg-gray-300'
+                  ? 'w-2 sm:w-1.5 bg-primary-300'
+                  : 'w-2 sm:w-1.5 bg-gray-300'
               }`}
             />
           ))}
@@ -321,6 +408,34 @@ const InteractiveTutorial: React.FC<InteractiveTutorialProps> = ({ steps, onComp
           to {
             opacity: 1;
             transform: translateY(0);
+          }
+        }
+        
+        @keyframes touchRipple {
+          0% {
+            transform: scale(0.8);
+            opacity: 0.8;
+          }
+          50% {
+            transform: scale(1.2);
+            opacity: 0.4;
+          }
+          100% {
+            transform: scale(0.8);
+            opacity: 0.8;
+          }
+        }
+        
+        @media (max-width: 768px) {
+          /* Prevent zoom on double tap for tutorial elements */
+          [data-tutorial] {
+            touch-action: manipulation;
+          }
+          
+          /* Make tutorial more readable on mobile */
+          .tutorial-text {
+            font-size: 14px;
+            line-height: 1.5;
           }
         }
       `}</style>

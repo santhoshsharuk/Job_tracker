@@ -17,19 +17,30 @@ const App: React.FC = () => {
   const [currentPage, setCurrentPage] = useState<Page>('dashboard');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const { showTutorial, completeTutorial, skipTutorial } = useTutorial();
+  const [tutorialStep, setTutorialStep] = useState(0);
+
+  // Open sidebar on mobile when tutorial reaches navigation steps
+  React.useEffect(() => {
+    if (showTutorial && window.innerWidth < 1024) {
+      // Steps 2, 3, 4, 5 are navigation-related
+      if (tutorialStep >= 2 && tutorialStep <= 5) {
+        setIsSidebarOpen(true);
+      }
+    }
+  }, [showTutorial, tutorialStep]);
 
   const tutorialSteps = [
     {
       target: '[data-tutorial="add-button"]',
       title: 'Welcome to Job Tracker! 🎉',
-      description: 'Let me show you around! This interactive tutorial will guide you through the app. This is the Add Application button - you\'ll use it to track new job applications.',
+      description: 'This interactive tutorial will guide you through the app. This is the Add Application button - tap it to track new job applications.',
       position: 'bottom' as const,
       waitForAction: false,
     },
     {
       target: '[data-tutorial="add-button"]',
       title: 'Add Your First Application',
-      description: 'Click this button to add a new job application. You can add company name, position, status, and more!',
+      description: 'Tap this button to add a new job application with company name, position, status, salary, and important dates.',
       position: 'bottom' as const,
       action: 'click' as const,
       waitForAction: false,
@@ -37,22 +48,22 @@ const App: React.FC = () => {
     {
       target: '[data-tutorial="dashboard-link"]',
       title: 'Dashboard View',
-      description: 'The Dashboard shows all your applications in a list view with filters and search. This is where you currently are.',
+      description: 'The Dashboard displays all applications in a list with filters, search, and sorting options.',
       position: 'right' as const,
       waitForAction: false,
     },
     {
       target: '[data-tutorial="kanban-link"]',
       title: 'Kanban Board View',
-      description: 'Switch to Kanban view to visually manage your applications. Drag cards between columns to update status. Click "Kanban Board" to see it.',
+      description: 'Kanban view lets you visually manage applications by status. On desktop, drag cards. On mobile, tap to change status. Try it now!',
       position: 'right' as const,
       action: 'click' as const,
       waitForAction: true,
     },
     {
       target: '[data-tutorial="settings-link"]',
-      title: 'Settings & Configuration',
-      description: 'Access Settings to add your AI API key for smart suggestions, import/export data, and customize your experience. Click "Settings".',
+      title: 'Settings & Options',
+      description: 'Settings lets you configure AI API keys, import/export data, sync with Google Drive, and manage preferences. Take a look!',
       position: 'right' as const,
       action: 'click' as const,
       waitForAction: true,
@@ -60,7 +71,7 @@ const App: React.FC = () => {
     {
       target: '[data-tutorial="dashboard-link"]',
       title: 'You\'re All Set! 🚀',
-      description: 'Great job! You now know how to navigate Job Tracker. Click "Dashboard" to finish and start tracking your applications!',
+      description: 'Perfect! You now know all the key features. Tap "Dashboard" to return and start tracking your job applications!',
       position: 'right' as const,
       action: 'click' as const,
       waitForAction: true,
@@ -123,6 +134,7 @@ const App: React.FC = () => {
           steps={tutorialSteps}
           onComplete={completeTutorial}
           onSkip={skipTutorial}
+          onStepChange={setTutorialStep}
         />
       )}
 
