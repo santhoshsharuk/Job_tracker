@@ -1,6 +1,6 @@
 import React from 'react';
 import { Page } from '../types';
-import { Briefcase, LayoutDashboard, Columns, Settings, X } from 'lucide-react';
+import { Briefcase, LayoutDashboard, Columns, Settings, X, Search } from 'lucide-react';
 
 interface SidebarProps {
   currentPage: Page;
@@ -82,6 +82,14 @@ const Sidebar: React.FC<SidebarProps> = ({ currentPage, setCurrentPage, isOpen, 
             icon={<Columns className="h-5 w-5" />}
             text="Kanban Board"
             dataTutorial="kanban-link"
+          />
+          <NavLink
+            page="jobfinder"
+            currentPage={currentPage}
+            setCurrentPage={setCurrentPage}
+            icon={<Search className="h-5 w-5" />}
+            text="Job Finder"
+            dataTutorial="jobfinder-link"
           />
           <NavLink
             page="settings"

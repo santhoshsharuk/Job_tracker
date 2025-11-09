@@ -25,4 +25,4 @@ export interface Filter {
   endDate: string;
 }
 
-export type Page = 'dashboard' | 'kanban' | 'settings';
+export type Page = 'dashboard' | 'kanban' | 'settings' | 'jobfinder';

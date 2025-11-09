@@ -8,6 +8,7 @@ import Sidebar from './components/Sidebar';
 import DashboardPage from './pages/DashboardPage';
 import KanbanPage from './pages/KanbanPage';
 import SettingsPage from './pages/SettingsPage';
+import JobFinderPage from './pages/JobFinderPage';
 import InteractiveTutorial from './components/Tutorial';
 
 const App: React.FC = () => {
@@ -114,6 +115,8 @@ const App: React.FC = () => {
                   onEditApplication={handleEditApplication} 
                   onUpdateStatus={handleUpdateStatus} 
                />;
+      case 'jobfinder':
+        return <JobFinderPage />;
       case 'settings':
         return <SettingsPage applications={applications} setApplications={setApplications} />;
       case 'dashboard':
