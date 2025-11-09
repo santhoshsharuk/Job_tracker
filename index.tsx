@@ -1,7 +1,10 @@
 
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import Clarity from '@microsoft/clarity';
 import App from './App';
+
+Clarity.init('u3idkeq8dk');
 
 const rootElement = document.getElementById('root');
 if (!rootElement) {
