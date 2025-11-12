@@ -1,0 +1,85 @@
+import path from 'path';
+import { defineConfig, loadEnv } from 'vite';
+import react from '@vitejs/plugin-react';
+import { VitePWA } from 'vite-plugin-pwa';
+
+export default defineConfig(({ mode }) => {
+    const env = loadEnv(mode, '.', '');
+    return {
+      server: {
+        port: 3000,
+        host: '0.0.0.0',
+      },
+      plugins: [
+        react(),
+        VitePWA({
+          registerType: 'autoUpdate',
+          includeAssets: ['logo.svg', 'pwa-192x192.png', 'pwa-512x512.png'],
+          manifest: {
+            name: 'Job Tracker - Track Your Job Applications',
+            short_name: 'Job Tracker',
+            description: 'Track your job applications efficiently with reminders, analytics, and AI-powered insights',
+            theme_color: '#3b82f6',
+            background_color: '#ffffff',
+            display: 'standalone',
+            scope: '/Job_tracker/',
+            start_url: '/Job_tracker/',
+            orientation: 'portrait-primary',
+            icons: [
+              {
+                src: '/Job_tracker/pwa-192x192.png',
+                sizes: '192x192',
+                type: 'image/png',
+                purpose: 'any'
+              },
+              {
+                src: '/Job_tracker/pwa-512x512.png',
+                sizes: '512x512',
+                type: 'image/png',
+                purpose: 'any'
+              },
+              {
+                src: '/Job_tracker/pwa-512x512.png',
+                sizes: '512x512',
+                type: 'image/png',
+                purpose: 'maskable'
+              }
+            ],
+            categories: ['productivity', 'business']
+          },
+          workbox: {
+            globPatterns: ['**/*.{js,css,html,ico,png,svg,woff,woff2}'],
+            runtimeCaching: [
+              {
+                urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
+                handler: 'CacheFirst',
+                options: {
+                  cacheName: 'google-fonts-cache',
+                  expiration: {
+                    maxEntries: 10,
+                    maxAgeSeconds: 60 * 60 * 24 * 365
+                  },
+                  cacheableResponse: {
+                    statuses: [0, 200]
+                  }
+                }
+              }
+            ]
+          },
+          devOptions: {
+            enabled: true
+          }
+        })
+      ],
+      base: '/Job_tracker/',
+      define: {
+        'process.env.API_KEY': JSON.stringify(env.GEMINI_API_KEY || ''),
+        'process.env.GEMINI_API_KEY': JSON.stringify(env.GEMINI_API_KEY || '')
+      },
+      resolve: {
+        alias: {
+          '@': path.resolve(process.cwd(), '.'),
+        }
+      }
+    };
+});
