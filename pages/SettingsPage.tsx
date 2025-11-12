@@ -4,7 +4,8 @@ import ExportControls from '../components/ExportControls';
 import ImportControls from '../components/ImportControls';
 import GoogleDriveSync from '../components/GoogleDriveSync';
 import { useLocalStorage } from '../hooks/useLocalStorage';
-import { HelpCircle } from 'lucide-react';
+import { HelpCircle, Bell, BellOff } from 'lucide-react';
+import { NotificationService } from '../services/notificationService';
 
 interface SettingsPageProps {
   applications: Application[];
@@ -16,6 +17,9 @@ const SettingsPage: React.FC<SettingsPageProps> = ({ applications, setApplicatio
   const [apiKeyInput, setApiKeyInput] = useState(geminiApiKey);
   const [showApiKey, setShowApiKey] = useState(false);
   const [saveMessage, setSaveMessage] = useState('');
+  const [notificationStatus, setNotificationStatus] = useState(
+    NotificationService.getPermissionStatus()
+  );
 
   const handleImport = (newApplications: Application[]) => {
     // Basic de-duplication based on a composite key
@@ -45,6 +49,20 @@ const SettingsPage: React.FC<SettingsPageProps> = ({ applications, setApplicatio
   const handleRestartTutorial = () => {
     localStorage.removeItem('jobTracker_tutorialCompleted');
     window.location.reload();
+  };
+
+  const handleRequestNotifications = async () => {
+    const permission = await NotificationService.requestPermission();
+    setNotificationStatus(NotificationService.getPermissionStatus());
+    
+    if (permission === 'granted') {
+      await NotificationService.showNotification(
+        '🎉 Notifications Enabled!',
+        {
+          body: 'You will now receive reminders for your job applications.',
+        }
+      );
+    }
   };
 
   return (
@@ -125,6 +143,55 @@ const SettingsPage: React.FC<SettingsPageProps> = ({ applications, setApplicatio
       <div className="bg-white p-4 sm:p-6 rounded-xl shadow-md">
         <h2 className="text-lg sm:text-xl font-bold text-gray-700 mb-4 border-b pb-3">Cloud Sync</h2>
         <GoogleDriveSync applications={applications} setApplications={setApplications} />
+      </div>
+
+      <div className="bg-white p-4 sm:p-6 rounded-xl shadow-md">
+        <h2 className="text-lg sm:text-xl font-bold text-gray-700 mb-4 border-b pb-3">Notifications</h2>
+        <div className="space-y-4">
+          <div>
+            <h3 className="text-base sm:text-lg font-semibold text-gray-800 flex items-center gap-2">
+              {notificationStatus.granted ? (
+                <Bell className="h-5 w-5 text-green-600" />
+              ) : (
+                <BellOff className="h-5 w-5 text-gray-400" />
+              )}
+              Push Notifications
+            </h3>
+            <p className="text-xs sm:text-sm text-gray-500 mb-4 mt-2">
+              {notificationStatus.granted ? (
+                'Notifications are enabled. You will receive reminders for your job applications.'
+              ) : notificationStatus.denied ? (
+                'Notifications are blocked. Please enable them in your browser settings to receive reminders.'
+              ) : (
+                'Enable notifications to receive timely reminders for your job applications.'
+              )}
+            </p>
+            {!notificationStatus.granted && !notificationStatus.denied && (
+              <button
+                onClick={handleRequestNotifications}
+                className="w-full sm:w-auto px-6 py-2 text-sm sm:text-base bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors font-medium flex items-center gap-2"
+              >
+                <Bell className="h-4 w-4" />
+                Enable Notifications
+              </button>
+            )}
+            {notificationStatus.granted && (
+              <div className="flex items-center gap-2 text-sm text-green-600">
+                <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                </svg>
+                Notifications Active
+              </div>
+            )}
+            {notificationStatus.denied && (
+              <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+                <p className="text-xs sm:text-sm text-yellow-800">
+                  <strong>How to enable:</strong> Click the lock icon in your browser's address bar, then allow notifications for this site.
+                </p>
+              </div>
+            )}
+          </div>
+        </div>
       </div>
 
       <div className="bg-white p-4 sm:p-6 rounded-xl shadow-md">

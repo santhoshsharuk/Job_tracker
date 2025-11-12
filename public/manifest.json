@@ -1,0 +1,66 @@
+{
+  "name": "Job Tracker - Track Your Job Applications",
+  "short_name": "Job Tracker",
+  "description": "Track your job applications efficiently with reminders, analytics, and AI-powered insights",
+  "theme_color": "#3b82f6",
+  "background_color": "#ffffff",
+  "display": "standalone",
+  "scope": "/Job_tracker/",
+  "start_url": "/Job_tracker/",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/Job_tracker/pwa-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/Job_tracker/pwa-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/Job_tracker/pwa-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/Job_tracker/pwa-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "form_factor": "narrow"
+    }
+  ],
+  "categories": ["productivity", "business"],
+  "shortcuts": [
+    {
+      "name": "Add Application",
+      "short_name": "Add Job",
+      "description": "Quickly add a new job application",
+      "url": "/Job_tracker/?action=add",
+      "icons": [
+        {
+          "src": "/Job_tracker/pwa-192x192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "Dashboard",
+      "short_name": "Dashboard",
+      "description": "View your application dashboard",
+      "url": "/Job_tracker/?page=dashboard",
+      "icons": [
+        {
+          "src": "/Job_tracker/pwa-192x192.png",
+          "sizes": "192x192"
+        }
+      ]
+    }
+  ]
+}

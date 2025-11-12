@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Application, Status } from '../types';
-import { X } from 'lucide-react';
+import { X, Bell } from 'lucide-react';
 
 interface ApplicationFormProps {
   application: Application | null;
@@ -127,8 +127,11 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({ application, onSave, 
             </div>
             
             <div className="border-t border-gray-200 pt-4 sm:pt-6">
-                <h3 className="text-base sm:text-lg font-semibold text-gray-800">Follow-up Reminder</h3>
-                <p className="text-xs sm:text-sm text-gray-500 mb-3 sm:mb-4">Set a date for a follow-up. Leave blank to disable.</p>
+                <h3 className="text-base sm:text-lg font-semibold text-gray-800 flex items-center gap-2">
+                  <Bell className="h-4 w-4 sm:h-5 sm:w-5 text-amber-500" />
+                  Follow-up Reminder
+                </h3>
+                <p className="text-xs sm:text-sm text-gray-500 mb-3 sm:mb-4">Set a date to receive a push notification reminder. Leave blank to disable.</p>
                 <div className="space-y-4 sm:space-y-6">
                     <div>
                         <label htmlFor="reminderDate" className="block text-sm font-medium text-gray-700">Reminder Date</label>

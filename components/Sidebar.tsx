@@ -1,6 +1,7 @@
 import React from 'react';
 import { Page } from '../types';
-import { Briefcase, LayoutDashboard, Columns, Settings, X, Search } from 'lucide-react';
+import { Briefcase, LayoutDashboard, Columns, Settings, X, Search, Download, CheckCircle } from 'lucide-react';
+import { usePWAInstall } from '../hooks/usePWAInstall';
 
 interface SidebarProps {
   currentPage: Page;
@@ -35,6 +36,8 @@ const NavLink: React.FC<{
 };
 
 const Sidebar: React.FC<SidebarProps> = ({ currentPage, setCurrentPage, isOpen, onClose }) => {
+  const { isInstallable, isInstalled, installApp } = usePWAInstall();
+
   return (
     <>
       {/* Mobile overlay */}
@@ -99,6 +102,32 @@ const Sidebar: React.FC<SidebarProps> = ({ currentPage, setCurrentPage, isOpen, 
             text="Settings"
             dataTutorial="settings-link"
           />
+        </div>
+
+        {/* PWA Install Button */}
+        <div className="mt-auto pt-4 border-t border-gray-700">
+          {isInstallable && !isInstalled && (
+            <button
+              onClick={installApp}
+              className="flex items-center justify-center w-full px-4 py-3 text-sm font-medium bg-primary-600 hover:bg-primary-700 text-white rounded-lg transition-all shadow-lg hover:shadow-xl transform hover:scale-105"
+            >
+              <Download className="h-5 w-5 mr-2 animate-bounce" />
+              <div className="text-left flex-1">
+                <div className="font-semibold">Install App</div>
+                <div className="text-xs opacity-90">One-tap access</div>
+              </div>
+            </button>
+          )}
+          
+          {isInstalled && (
+            <div className="flex items-center justify-center w-full px-4 py-3 text-sm bg-green-600 bg-opacity-20 text-green-400 rounded-lg border border-green-600 border-opacity-30">
+              <CheckCircle className="h-5 w-5 mr-2" />
+              <div className="text-left flex-1">
+                <div className="font-semibold">App Installed</div>
+                <div className="text-xs opacity-80">Ready to use</div>
+              </div>
+            </div>
+          )}
         </div>
       </nav>
     </>

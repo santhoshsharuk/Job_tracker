@@ -2,6 +2,7 @@ import React, { useState, useCallback } from 'react';
 import { Application, Page, Status } from './types';
 import { useLocalStorage } from './hooks/useLocalStorage';
 import { useTutorial } from './hooks/useTutorial';
+import { useNotifications } from './hooks/useNotifications';
 import Header from './components/Header';
 import ApplicationForm from './components/ApplicationForm';
 import Sidebar from './components/Sidebar';
@@ -19,6 +20,7 @@ const App: React.FC = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const { showTutorial, completeTutorial, skipTutorial } = useTutorial();
   const [tutorialStep, setTutorialStep] = useState(0);
+  const { requestNotificationPermission, checkAndScheduleReminders } = useNotifications(applications);
 
   // Open sidebar on mobile when tutorial reaches navigation steps
   React.useEffect(() => {
@@ -101,6 +103,9 @@ const App: React.FC = () => {
     }
     setIsFormOpen(false);
     setEditingApplication(null);
+    
+    // Re-check and schedule reminders after saving
+    setTimeout(() => checkAndScheduleReminders(), 100);
   };
 
   const handleUpdateStatus = useCallback((id: string, newStatus: Status) => {
